@@ -1,6 +1,6 @@
-all: makedb2.c transfer.c 
+all: makedb.c transfer.c 
 	gcc -o transfer transfer.c
 	gcc -o makedb makedb.c
 
-clear: 
+clean: 
 	rm -irf transfer makedb

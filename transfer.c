@@ -36,10 +36,10 @@ void ToSolar( int *y, int *m, int *d, int isleap)
 			Smonth = stMOLTS[*y-1900].Lmonth[*m - 1].month;
 			Sday = stMOLTS[*y-1900].Lmonth[*m - 1].day + *d - 1;
 		}
-		else
-		{
-			printf("No defined!!\n");
-		}
+//		else
+//		{
+//			printf("No defined!!\n");
+//		}
 	}
 	if ( Sday > SMONTHDAY[Smonth] )
 	{
@@ -66,36 +66,93 @@ void ToLunar( int *y, int *m, int *d, int *l)
 	if ( ( *d < 1 ) || ( *d > SMONTHDAY[*m] ) )
 		return;
 
-	int Lyear = *y;
+	int leap   = stMOLTS[*y-1900].leap;
 	int Lmonth = 0;
-	int Lday = 0;
-	int Lleap = 0;
-	int Ltemp = 0;	
+	int Lday   = 0;
+	int LtempL = stMOLTS[*y-1900].Smonth[*m - 1].leap;
+	int LtempD = 1;	
+	int LtempM; 
+	int LtempY;
+	int tmp;	
+	int tmp2;	
 	
-	Lmonth = stMOLTS[*y-1900].Lmonth[*m - 1].month;
-	Lday = stMOLTS[*y-1900].Lmonth[*m - 1].day + (*d) - 1;
+	Lday   = stMOLTS[*y-1900].Smonth[*m - 1].day + (*d) - 1;
+	Lmonth = stMOLTS[*y-1900].Smonth[*m - 1].month;
 
-	// example: 1902. 10. 31 => 1092. 10. 1
+	// example: 1902. 10. 31 => 1902. 10. 1
 	// must to calculate the day of month of lunar then find correct day when Lday > 29.
 	if ( Lday > 29 )
 	{
-		Lday = stMOLTS[*y-1900].Lmonth[*m].day - (*d) - 1;
-		Ltemp = Lday;
-	}
-//	if ( Lday > SMONTHDAY[Smonth] )
-//	{
-//		Sday -= SMONTHDAY[Smonth];
-//		Smonth ++;
-//		if ( Smonth >= 13 )
-//			Smonth = ( Smonth % 12 );
-//	}
-//
-//	if ( ( *m > 10 ) && ( Smonth < 3 ) )
-//		Syear ++ ;
+		// if next month is leap month..
+		if ( leap != 0 && leap == Lmonth && LtempL == 0  )
+		{
+			LtempM = tmp = stMOLTS[*y-1900].Smonth[*m - 1].month;	
+			LtempY = (LtempM > *m)?(*y-1):*y;
+			tmp2 = LtempL;
+			LtempL = 1;
+		}
+		else
+		{
+			LtempM = tmp = ( stMOLTS[*y-1900].Smonth[*m - 1].month % 12 ) + 1;	
+			LtempY = (LtempM > *m)?(*y-1):*y;
+			tmp2 = LtempL;
+			LtempL = 0;
+		}
+		ToSolar( &LtempY, &LtempM, &LtempD, LtempL); // 1902.9.1
 
-	*y = Syear;
-	*m = Smonth;
-	*d = Sday;
+		if ( LtempM == *m )
+		{
+			if ( LtempD > *d ) 
+			{
+				Lday = 30;   // day 30
+				LtempL = tmp2;
+			}
+			else
+			{
+				Lday = 1 + ( *d - LtempD );
+				Lmonth = tmp ;
+			}
+		}
+		else if ( LtempM > *m )
+		{
+			Lmonth = ( Lmonth % 12 ) + 1 ;
+			LtempD = 1;
+
+			// if next month is leap month.. (there are some bug, here!!)
+			// example:How to prcess 4 5 5(leap)?
+			if ( leap != 0 && leap == Lmonth && LtempL == 0  )
+			{
+				LtempM = stMOLTS[*y-1900].Smonth[*m - 1].month;	
+				LtempY = ((LtempM > *m)?(*y-1):*y ); 
+				LtempL = 1;
+			}
+			else
+			{
+				LtempM = (( stMOLTS[*y-1900].Smonth[*m - 1].month % 12 ) + 2 );
+				LtempY = ((LtempM > *m)?(*y-1):*y ); 
+				LtempL = 0;
+			}
+			ToSolar( &LtempY, &LtempM, &LtempD, LtempL); // 1902.10.1
+
+
+
+			if ( LtempD <= *d && LtempM == *m )
+			{
+				Lday = 1 + ( *d - LtempD );	
+			}
+		}
+	}
+	if ( Lmonth > *m )
+		*y = *y - 1;
+	*m = Lmonth;
+	*d = Lday;
+
+	if ( leap == Lmonth && LtempL == 1 )
+		*l = 1;
+	else 
+		*l = 0;
+	
+	
 }
 
 void readDB()
@@ -152,19 +209,26 @@ int main(int argc, int *argv[])
 {
 	readDB();
 	int y, m, d, l;
-	if ( argc >= 4 )
+	if ( argc >= 5 )
 	{
 		y = atoi(argv[1]);
 		m = atoi(argv[2]);
 		d = atoi(argv[3]);
 		l = atoi(argv[4]);
-//		printf("the Day is %d %d %d \n", y, m, d);
 		ToSolar(&y, &m, &d, l);
-	//	ToLunar(&y, &m, &d);
 		
-//		printf("the Day After transfered is %d %d %d \n", y, m, d);
-		printf("%d %d %d\n", y, m, d);
+		printf("%d %d %d \n", y, m, d);
 		return 0;
+	}
+	else if ( argc == 4 )
+	{
+		y = atoi(argv[1]);
+		m = atoi(argv[2]);
+		d = atoi(argv[3]);
+		ToLunar(&y, &m, &d, &l);
+		printf("%d %d %d %s\n", y, m, d, (l != 0)?"leap":"");
+
+
 	}
 //	findX_1();
 //	int i ; 
