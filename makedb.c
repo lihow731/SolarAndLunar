@@ -13,7 +13,7 @@ int makeLunarDB()
 	int count = 0;
 	int mCount = 0;
 	memset( (void *) stMOLTS, 0x0, sizeof(stMOLTS));
-	f = fopen("all_p3.txt","r");
+	f = fopen("Lunar2Solar.txt","r");
 	if ( f != 0)
 	{
 		printf("open file successed! sizeof(int)= %d\n", sizeof(int));
@@ -69,7 +69,7 @@ int makeLunarDB()
 int makeSolarDB()
 {
 	FILE *f;
-	if ( ( f = fopen("Solar2Lunar.log","r")) != NULL )
+	if ( ( f = fopen("Solar2Lunar.txt","r")) != NULL )
 	{
 		int SY, SM, SD, LY, LD, LM, LL;
 		char A[2];
