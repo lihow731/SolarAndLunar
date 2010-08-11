@@ -115,23 +115,23 @@ void search(int y, int m, int d, int h)
 		if ( ST[y-1900].sts[i*2].month == m )
 		{
 			solarTerm = i;
-			if ( ST[y-1900].sts[i*2].day < d )
+			if ( d < ST[y-1900].sts[i*2].day )
 				c = 1;
-			else if ( ST[y-1900].sts[ i * 2 + 1].day > d )
+			else if ( ST[y-1900].sts[ i * 2 + 1].day < d )
 				c = 2;
 			else if ( ST[y-1900].sts[i * 2].day <= d  && d <= ST[y-1900].sts[i * 2 + 1].day )
 			{
-				if ( h < ST[y-1900].sts[i*2].hour )
+				if ( h < ST[y-1900].sts[i*2].hour && ST[y-1900].sts[i * 2].day == d )
 				{
 					c = 1;
 				}
-				else if ( ST[y-1900].sts[i*2].hour <= h )
+				else if ( ST[y-1900].sts[i*2 + 1].hour <= h && d == ST[y-1900].sts[i * 2 + 1].day)
 					c = 2;
 //				if ( ST[y-1900].sts[i * 2].hour  <= h  && h <= ST[y-1900    ].sts[i * 2 + 1].minute )
 //				{
-//					if ( mi < ST[y-1900].sts[i*2].minute  )
+//					if ( mi < ST[y-1900].sts[i*2].minute &&  ST[y-1900].sts[i*2].hour  == h )
 //						c = 1;
-//					if ( ST[y-1900].sts[i*2].minute <= mi )
+//					if ( ST[y-1900].sts[i*2+1].minute <= mi && h == ST[y-1900].sts[i*2+1].minute)
 //						c = 2;
 //				}
 
@@ -179,6 +179,18 @@ void search(int y, int m, int d, int h)
 
 }
 
+void debug(void)
+{
+	int i, j;
+	for ( i = 1 ; i <= 23 ; i++)
+	{
+		printf("The date is 1978/7/7 %dh\n",i);
+		search(1978, 7, 7, i); 
+	}
+
+};
+
+
 int main ( int argc, char *argv[] )
 {
 	make24SolarTermsDB();
@@ -193,6 +205,8 @@ int main ( int argc, char *argv[] )
 		h = atoi(argv[4]);
 		search(y, m, d, h);
 	}
+	else
+		debug();	
 
 	return 0;
 }
