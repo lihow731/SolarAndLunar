@@ -1,3 +1,6 @@
+
+#ifndef SOLARANDLUNAR_DB
+#define SOLARANDLUNAR_DB
 struct Sday {
 	int month;
 	int day;
@@ -16,4 +19,6 @@ struct MappingOfLunarToSolar {
 	int leap;
 };
 
-struct MappingOfLunarToSolar stMOLTS[200];
+
+
+#endif // SOLARANDLUNAR_DB //

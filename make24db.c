@@ -1,19 +1,14 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
-//#define DEBUG
-struct SOLARTERMS{
-	int  month  ;
-	int  day    ;
-	int  hour   ;
-	int  minute ;
-	int  second ;
-};
+#include "makedb.h"
+#include "SolarAndLunar.h"
 
-struct SOLARTERM24 {
-	int year;
-	struct SOLARTERMS sts[24];
-}ST[200];
+//#define DEBUG
+
+struct SOLARTERM24 ST[200];
+
+int SMONTHDAY[] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
 void make24SolarTermsDB()
 {
@@ -70,7 +65,7 @@ void make24SolarTermsDB()
 	
 }
 
-void save2file()
+void save2file24()
 {
 	FILE *f2;
 	f2 = fopen("db24","wb");
@@ -85,6 +80,7 @@ void save2file()
 
 }
 
+// input is Gregorian.
 void search(int y, int m, int d, int h)
 {
 
@@ -92,10 +88,12 @@ void search(int y, int m, int d, int h)
 		return;
 	if ( m < 1 || m > 12 )
 		return;
-	if ( d < 1 || d > 31 )
+	if ( d < 1 || d > SMONTHDAY[m] )
 		return;
 	if ( h < 0 || h > 23 )
 		return;
+
+    		
 	int i, j;
 	int after, before;
 	int afterY = y;
@@ -115,23 +113,23 @@ void search(int y, int m, int d, int h)
 		if ( ST[y-1900].sts[i*2].month == m )
 		{
 			solarTerm = i;
-			if ( d < ST[y-1900].sts[i*2].day )
+			if ( ST[y-1900].sts[i*2].day < d )
 				c = 1;
-			else if ( ST[y-1900].sts[ i * 2 + 1].day < d )
+			else if ( ST[y-1900].sts[ i * 2 + 1].day > d )
 				c = 2;
 			else if ( ST[y-1900].sts[i * 2].day <= d  && d <= ST[y-1900].sts[i * 2 + 1].day )
 			{
-				if ( h < ST[y-1900].sts[i*2].hour && ST[y-1900].sts[i * 2].day == d )
+				if ( h < ST[y-1900].sts[i*2].hour )
 				{
 					c = 1;
 				}
-				else if ( ST[y-1900].sts[i*2 + 1].hour <= h && d == ST[y-1900].sts[i * 2 + 1].day)
+				else if ( ST[y-1900].sts[i*2].hour <= h )
 					c = 2;
 //				if ( ST[y-1900].sts[i * 2].hour  <= h  && h <= ST[y-1900    ].sts[i * 2 + 1].minute )
 //				{
-//					if ( mi < ST[y-1900].sts[i*2].minute &&  ST[y-1900].sts[i*2].hour  == h )
+//					if ( mi < ST[y-1900].sts[i*2].minute  )
 //						c = 1;
-//					if ( ST[y-1900].sts[i*2+1].minute <= mi && h == ST[y-1900].sts[i*2+1].minute)
+//					if ( ST[y-1900].sts[i*2].minute <= mi )
 //						c = 2;
 //				}
 
@@ -179,34 +177,20 @@ void search(int y, int m, int d, int h)
 
 }
 
-void debug(void)
-{
-	int i, j;
-	for ( i = 1 ; i <= 23 ; i++)
-	{
-		printf("The date is 1978/7/7 %dh\n",i);
-		search(1978, 7, 7, i); 
-	}
-
-};
-
-
-int main ( int argc, char *argv[] )
-{
-	make24SolarTermsDB();
-	save2file();
-
-	int y, m, d, h;
-	if ( argc == 5 )
-	{
-		y = atoi(argv[1]);
-		m = atoi(argv[2]);
-		d = atoi(argv[3]);
-		h = atoi(argv[4]);
-		search(y, m, d, h);
-	}
-	else
-		debug();	
-
-	return 0;
-}
+//int main ( int argc, char *argv[] )
+//{
+//	make24SolarTermsDB();
+//	save2file24();
+//
+//	int y, m, d, h;
+//	if ( argc == 5 )
+//	{
+//		y = atoi(argv[1]);
+//		m = atoi(argv[2]);
+//		d = atoi(argv[3]);
+//		h = atoi(argv[4]);
+//		search(y, m, d, h);
+//	}
+//
+//	return 0;
+//}

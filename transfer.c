@@ -1,9 +1,11 @@
 #include <stdio.h>
+#include "SolarAndLunar.h"
 #include "db.h"
-
 #define SISLEAP(year)  ( ( ( year % 4  == 0 ) && ( year % 100 != 0 ) )  || ( year % 400 == 0 ) )
 
-int SMONTHDAY[] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+static struct MappingOfLunarToSolar stMOLTS[200];
+
+static int SMONTHDAY[] = { 0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
 
 void ToSolar( int *y, int *m, int *d, int isleap)
 {
@@ -171,68 +173,68 @@ void readDB()
 
 }
 
-void findX_1()
-{
-	int i,j,k;
-	int y,m,d;
-	for ( i = 1900 ; i < 2100 ; i ++)
-	{
-		for ( j = 1 ; j <= 12 ; j++)
-		{
+//void findX_1()
+//{
+//	int i,j,k;
+//	int y,m,d;
+//	for ( i = 1900 ; i < 2100 ; i ++)
+//	{
+//		for ( j = 1 ; j <= 12 ; j++)
+//		{
+//
+//			for ( k = 1 ; k <=30 ; k++)
+//			{
+//				y = i;
+//				m = j;
+//				d = k;
+//				ToSolar(&y,&m,&d, 0);
+//				if ( d == 1 )
+//					printf("%d %d %d => %d %d %d %d\n", y,m,d,i,j,k,0);
+//			}
+//			if ( stMOLTS[i - 1900].leap == j )
+//			{
+//				for ( k = 1 ; k <=30 ; k++)
+//				{
+//					y = i;
+//					m = j;
+//					d = k;
+//					ToSolar(&y,&m,&d, 1);
+//					if ( d == 1 )
+//						printf("%d %d %d => %d %d %d %d\n", y,m,d,i,j,k,1);
+//				}
+//			}
+//		}
+//	}
+//}
 
-			for ( k = 1 ; k <=30 ; k++)
-			{
-				y = i;
-				m = j;
-				d = k;
-				ToSolar(&y,&m,&d, 0);
-				if ( d == 1 )
-					printf("%d %d %d => %d %d %d %d\n", y,m,d,i,j,k,0);
-			}
-			if ( stMOLTS[i - 1900].leap == j )
-			{
-				for ( k = 1 ; k <=30 ; k++)
-				{
-					y = i;
-					m = j;
-					d = k;
-					ToSolar(&y,&m,&d, 1);
-					if ( d == 1 )
-						printf("%d %d %d => %d %d %d %d\n", y,m,d,i,j,k,1);
-				}
-			}
-		}
-	}
-}
-
-int main(int argc, int *argv[])
-{
-	readDB();
-	int y, m, d, l;
-	if ( argc >= 5 )
-	{
-		y = atoi(argv[1]);
-		m = atoi(argv[2]);
-		d = atoi(argv[3]);
-		l = atoi(argv[4]);
-		ToSolar(&y, &m, &d, l);
-		
-		printf("%d %d %d \n", y, m, d);
-		return 0;
-	}
-	else if ( argc == 4 )
-	{
-		y = atoi(argv[1]);
-		m = atoi(argv[2]);
-		d = atoi(argv[3]);
-		ToLunar(&y, &m, &d, &l);
-		printf("%d %d %d %s\n", y, m, d, (l != 0)?"leap":"");
-
-
-	}
-//	findX_1();
-//	int i ; 
-//	for ( i = 1 ; i <= 400 ; i ++ )
-//		printf("%d is %s\n", i,SISLEAP(i)?"LEAP":"" );
-
-}
+//int main(int argc, int *argv[])
+//{
+//	readDB();
+//	int y, m, d, l;
+//	if ( argc >= 5 )
+//	{
+//		y = atoi(argv[1]);
+//		m = atoi(argv[2]);
+//		d = atoi(argv[3]);
+//		l = atoi(argv[4]);
+//		ToSolar(&y, &m, &d, l);
+//		
+//		printf("%d %d %d \n", y, m, d);
+//		return 0;
+//	}
+//	else if ( argc == 4 )
+//	{
+//		y = atoi(argv[1]);
+//		m = atoi(argv[2]);
+//		d = atoi(argv[3]);
+//		ToLunar(&y, &m, &d, &l);
+//		printf("%d %d %d %s\n", y, m, d, (l != 0)?"leap":"");
+//
+//
+//	}
+////	findX_1();
+////	int i ; 
+////	for ( i = 1 ; i <= 400 ; i ++ )
+////		printf("%d is %s\n", i,SISLEAP(i)?"LEAP":"" );
+//
+//}

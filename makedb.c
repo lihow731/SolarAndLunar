@@ -1,6 +1,9 @@
 #include <stdio.h>
 #include <string.h>
+#include "makedb.h"
 #include "db.h"
+
+static struct MappingOfLunarToSolar stMOLTS[200];
 
 int makeLunarDB()
 {
@@ -108,10 +111,10 @@ void save2file()
 
 }
 
-int main ( void )
-{
-	makeLunarDB();
-	makeSolarDB();
-	save2file();
-	return 0;
-}
+//int main ( void )
+//{
+//	makeLunarDB();
+//	makeSolarDB();
+//	save2file();
+//	return 0;
+//}
