@@ -1,7 +1,10 @@
 #include <cstdlib>
 #include <iostream>
+#include <stdio.h>
+extern "C" {
 #include "SolarAndLunar.h"
 #include "makedb.h"
+}
 
 using namespace std;
 
@@ -32,18 +35,18 @@ int main(int argc, char *argv[])
 
 
 	}
-    else if ( argc == 1 )
-    {
-    	make24SolarTermsDB();
-    	save2file24();
-    }
+	else if ( argc == 1 )
+	{
+		make24SolarTermsDB();
+		save2file24();
+	}
 	else
 	{
-    	makeLunarDB();
-    	makeSolarDB();
-    	save2file();   
-    }
+		makeLunarDB();
+		makeSolarDB();
+		save2file();   
+	}
     	
-    system("PAUSE");
-    return EXIT_SUCCESS;
+//	system("PAUSE");
+	return EXIT_SUCCESS;
 }

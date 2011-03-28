@@ -1,13 +1,13 @@
 Convert the Calendar between Gregorian and Chinese lunar.
 
 Make binary
-# make 
+$ make 
 
 Create db2
-# ./makedb
+$ ./transfer
 
 Convert from Gregorian to Chinese lunar
-# ./transfer 2010 8 9 
+$ ./transfer 2010 8 9 
 
 Convert from Chinese lunar to Gregorian
-# ./transfer 2010 6 29 0
+$ ./transfer 2010 6 29 0
