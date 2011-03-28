@@ -19,7 +19,7 @@ int makeLunarDB()
 	f = fopen("Lunar2Solar.txt","r");
 	if ( f != 0)
 	{
-		printf("open file successed! sizeof(int)= %d\n", sizeof(int));
+		//printf("open file successed! sizeof(int)= %d\n", sizeof(int));
 		while ( ! feof(f) )
 		{
 			fscanf(f,"%d%d%d%d", &M, &D, &Y, &LM);		
@@ -104,7 +104,7 @@ void save2file()
 	f2 = fopen("db2","wb");
 	if ( f2 != NULL )
 	{
-		printf("Open db2 successed!! sizeof(stMOLTS)=%d\n", sizeof(stMOLTS));
+		//printf("Open db2 successed!! sizeof(stMOLTS)=%d\n", sizeof(stMOLTS));
 		fwrite((void *)stMOLTS, sizeof(stMOLTS), 1, f2);
 		fclose(f2);
 	}
